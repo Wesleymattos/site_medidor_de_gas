@@ -5,84 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitoramento de Gás</title>
     <script type="module">
-        // (Código do Firebase permanece o mesmo)
-        // O código Firebase aqui é o mesmo que você já tem
+        // Importa o Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAbr7fMYIpnb83WakHYUonCQlNFoKDSLAc",
+            authDomain: "medidor-de-gas-95ee5.firebaseapp.com",
+            databaseURL: "https://medidor-de-gas-95ee5-default-rtdb.firebaseio.com",
+            projectId: "medidor-de-gas-95ee5",
+            storageBucket: "medidor-de-gas-95ee5.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        // Inicializando o Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        // Referência ao nó "gas_value" no banco de dados
+        const gasValueRef = ref(database, "/gas_value");
+        // Ouve as mudanças no "gas_value" e atualiza a página em tempo real
+        onValue(gasValueRef, (snapshot) => {
+            const gasValue = snapshot.val();
+            console.log("Valor do gas_value:", gasValue);
+            // Atualiza o valor exibido ou exibe uma mensagem de erro
+            if (gasValue !== null) {
+                document.getElementById("gasValue").innerText = gasValue;
+            } else {
+                document.getElementById("gasValue").innerText = "Erro ao carregar";
+            }
+        }, (error) => {
+            console.error("Erro ao ler gas_value:", error);
+            document.getElementById("gasValue").innerText = "Erro ao conectar ao banco de dados";
+        });
     </script>
     <style>
         body {
-            background-image: url('fundoo.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            height: 100vh;
-            margin: 0;
-            padding: 0;
-            color: black;
-        }
-
-        h1 {
-            color: black;
-            font-size: 4vw; /* Usar unidade de viewport */
-            margin-top: 5%;
-            background-color: rgba(208, 208, 208, 0.8);
-            padding: 10px 20px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        .gas-label {
-            font-size: 3vw; /* Usar unidade de viewport */
-            margin-top: 5%;
-            margin-bottom: 5%;
-            color: black;
-            background-color: rgba(208, 208, 208, 0.8);
-            padding: 10px 20px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        #gasValue {
-            font-size: 3vw; /* Usar unidade de viewport */
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            width: 25vw; /* Diminuir o tamanho do círculo */
-            height: 25vw; /* Diminuir o tamanho do círculo */
-            background-color: rgba(208, 208, 208, 0.8);
-            border-radius: 50%;
-            border: 6px solid black;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
-            color: yellow;
-            text-align: center;
+            height: 100vh;
+            background-color: #f4f4f4;
         }
-
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 6vw; /* Tamanho dinâmico para telas pequenas */
-            }
-
-            .gas-label {
-                font-size: 4vw; /* Tamanho dinâmico para telas pequenas */
-            }
-
-            #gasValue {
-                width: 40vw; /* Tamanho dinâmico para telas pequenas */
-                height: 40vw; /* Tamanho dinâmico para telas pequenas */
-                font-size: 5vw; /* Tamanho dinâmico para telas pequenas */
-            }
+        h1 {
+            color: #333;
+        }
+        #gasValue {
+            font-size: 2em;
+            color: #007BFF;
         }
     </style>
 </head>
 <body>
     <h1>Monitoramento de Gás</h1>
-    <div class="gas-label">Porcentagem do Gás</div>
-    <div id="gasValue">Carregando...</div>
+    <p>Porcentagem do Gás: <span id="gasValue">Carregando...</span>%</p>
 </body>
 </html>
