@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento de Gás</title>
+    <script type="module">
+        // Importa o Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAbr7fMYIpnb83WakHYUonCQlNFoKDSLAc",
+            authDomain: "medidor-de-gas-95ee5.firebaseapp.com",
+            databaseURL: "https://medidor-de-gas-95ee5-default-rtdb.firebaseio.com",
+            projectId: "medidor-de-gas-95ee5",
+            storageBucket: "medidor-de-gas-95ee5.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Inicializando o Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Referência ao nó "gas_value" no banco de dados
+        const gasValueRef = ref(database, "/gas_value");
+
+        // Ouve as mudanças no "gas_value" e atualiza a página em tempo real
+        onValue(gasValueRef, (snapshot) => {
+            const gasValue = snapshot.val();
+            console.log("Valor do gas_value:", gasValue);
+
+            // Atualiza o valor exibido ou exibe uma mensagem de erro
+            if (gasValue !== null) {
+                document.getElementById("gasValue").innerText = gasValue;
+            } else {
+                document.getElementById("gasValue").innerText = "Erro ao carregar";
+            }
+        }, (error) => {
+            console.error("Erro ao ler gas_value:", error);
+            document.getElementById("gasValue").innerText = "Erro ao conectar ao banco de dados";
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        #gasValue {
+            font-size: 2em;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <h1>Monitoramento de Gás</h1>
+    <p>Porcentagem do Gás: <span id="gasValue">Carregando...</span>%</p>
+</body>
+</html>
