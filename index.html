@@ -11,7 +11,7 @@
 
         // Configuração do Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyAbr7fMYIpnb83WakHYUonCQlNFoKDSLAc",
+            apiKey: "API_KEY",
             authDomain: "medidor-de-gas-95ee5.firebaseapp.com",
             databaseURL: "https://medidor-de-gas-95ee5-default-rtdb.firebaseio.com",
             projectId: "medidor-de-gas-95ee5",
@@ -27,43 +27,108 @@
         // Referência ao nó "gas_value" no banco de dados
         const gasValueRef = ref(database, "/gas_value");
 
+        // Solicitar permissão para notificações
+        Notification.requestPermission().then((permission) => {
+            if (permission !== "granted") {
+                console.log("Permissão para notificações não concedida.");
+            }
+        });
+
         // Ouve as mudanças no "gas_value" e atualiza a página em tempo real
         onValue(gasValueRef, (snapshot) => {
             const gasValue = snapshot.val();
             console.log("Valor do gas_value:", gasValue);
 
             // Atualiza o valor exibido ou exibe uma mensagem de erro
+            const gasValueElement = document.getElementById("gasValue");
             if (gasValue !== null) {
-                document.getElementById("gasValue").innerText = gasValue;
+                gasValueElement.innerText = gasValue + "%"; // Aproxima o símbolo de porcentagem
+                // Atualiza a cor de acordo com o valor
+                if (gasValue >= 0 && gasValue < 25) {
+                    gasValueElement.style.color = "red"; // Menor que 25%
+                    showNotification("Aviso: O gás está acabando!"); // Emite notificação
+                } else if (gasValue >= 25 && gasValue < 50) {
+                    gasValueElement.style.color = "#F39C12"; // Cor laranja mais escura
+                } else {
+                    gasValueElement.style.color = "green"; // Maior que 50%
+                }
             } else {
-                document.getElementById("gasValue").innerText = "Erro ao carregar";
+                gasValueElement.innerText = "Erro ao carregar";
             }
         }, (error) => {
             console.error("Erro ao ler gas_value:", error);
             document.getElementById("gasValue").innerText = "Erro ao conectar ao banco de dados";
         });
+
+        // Função para mostrar a notificação
+        function showNotification(message) {
+            if (Notification.permission === "granted") {
+                new Notification("Monitoramento de Gás", {
+                    body: message,
+                    icon: 'fundoo.png' // Ícone da notificação (opcional)
+                });
+            }
+        }
     </script>
     <style>
         body {
+            background-image: url('fundoo.png'); /* Imagem de fundo */
+            background-size: cover; /* Para cobrir toda a tela */
+            background-repeat: no-repeat; /* Não repetir a imagem */
+            background-attachment: fixed; /* Fixar a imagem no fundo */
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Começar a alinhar no topo */
             height: 100vh;
-            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: black; /* Mudar a cor para preto */
         }
+
         h1 {
-            color: #333;
+            color: black;
+            font-size: 4em; /* Tamanho do título */
+            margin-top: 60px;
+            background-color: #D0D0D0; /* Fundo cinza escuro */
+            padding: 10px 20px; /* Espaçamento interno */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            border-radius: 10px; /* Bordas arredondadas */
+            margin-left: 40px; /* Mover um pouco mais para a direita */
         }
+
+        .gas-label {
+            font-size: 2.5em;
+            margin-top: 230px; /* Mover a frase mais para baixo */
+            margin-bottom: 20px; /* Ajuste para criar mais espaço abaixo do texto */
+            color: black;
+            background-color: #D0D0D0; /* Fundo cinza escuro */
+            padding: 10px 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+            border-radius: 10px; /* Bordas arredondadas */
+            margin-left: 40px; /* Mover um pouco mais para a direita */
+        }
+
         #gasValue {
-            font-size: 2em;
-            color: #007BFF;
+            font-size: 2.3em; /* Aumentar o tamanho do texto dentro do círculo */
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px; /* Diminuir o tamanho do círculo */
+            height: 100px;
+            background-color: #D0D0D0; /* Fundo cinza mais escuro */
+            border-radius: 50%; /* Transformar em círculo */
+            border: 6px solid black; /* Borda preta mais grossa */
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); /* Sombra mais forte para destaque */
+            color: yellow;
         }
     </style>
 </head>
 <body>
     <h1>Monitoramento de Gás</h1>
-    <p>Porcentagem do Gás: <span id="gasValue">Carregando...</span>%</p>
+    <div class="gas-label">Porcentagem do Gás</div>
+    <div id="gasValue">Carregando...</div> <!-- Número da porcentagem exibido separadamente -->
 </body>
 </html>
