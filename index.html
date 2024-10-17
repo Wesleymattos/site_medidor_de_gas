@@ -55,10 +55,41 @@
             font-size: 2em;
             color: #007BFF;
         }
+		footer {
+			position: fixed;
+			bottom: 0;
+			width: 100%;
+			background-color: #333;
+			color: white;
+			text-align: center;
+			padding: 1px 0;
+        }
+			.top-bar {
+		background-color: #add8e6; /* Azul claro */
+		color: #333; /* Cor do texto */
+		padding: 1px 0; /* Espaçamento dentro da barra */
+		text-align: center; /* Centraliza o texto na barra */
+		width: 100%; /* Faz a barra ocupar toda a largura da página */
+		position: fixed; /* Fixa a barra no topo da página */
+		top: 0; /* Garante que a barra fique no topo */
+		z-index: 1000; /* Garante que a barra fique sobre outros elementos */
+		}
+
+		
     </style>
 </head>
 <body>
-    <h1>Monitoramento de Gás</h1>
+	<div class="top-bar">
+		<h2>Monitoramento de Gás</h2>
+	</div>
+   <!-- <h1>Monitoramento de Gás</h1> -->
     <p>Porcentagem do Gás: <span id="gasValue">Carregando...</span>%</p>
+	
 </body>
+
+<footer>
+    <p>&copy; 2024 Monitoramento de Gás. Todos os direitos reservados a empresa Wescode Technology.</p>
+</footer>
+
+
 </html>
