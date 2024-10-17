@@ -7,10 +7,11 @@
     <script type="module">
         // Importa o Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
+
         // Configuração do Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyAbr7fMYIpnb83WakHYUonCQlNFoKDSLAc",
+            apiKey: "API_KEY",
             authDomain: "medidor-de-gas-95ee5.firebaseapp.com",
             databaseURL: "https://medidor-de-gas-95ee5-default-rtdb.firebaseio.com",
             projectId: "medidor-de-gas-95ee5",
@@ -18,81 +19,139 @@
             messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
             appId: "YOUR_APP_ID"
         };
+
         // Inicializando o Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
-        // Referência ao nó "gas_value" no banco de dados
-        const gasValueRef = ref(database, "/gas_value");
-        // Ouve as mudanças no "gas_value" e atualiza a página em tempo real
-        onValue(gasValueRef, (snapshot) => {
-            const gasValue = snapshot.val();
-            console.log("Valor do gas_value:", gasValue);
-            // Atualiza o valor exibido ou exibe uma mensagem de erro
-            if (gasValue !== null) {
-                document.getElementById("gasValue").innerText = gasValue;
-            } else {
-                document.getElementById("gasValue").innerText = "Erro ao carregar";
-            }
-        }, (error) => {
-            console.error("Erro ao ler gas_value:", error);
-            document.getElementById("gasValue").innerText = "Erro ao conectar ao banco de dados";
-        });
+
+        // Função para atualizar o valor do gás ao clicar no botão
+        function updateGasValue() {
+            const gasValueRef = ref(database, "/gas_value");
+            get(gasValueRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const gasValue = snapshot.val();
+                    document.getElementById("gasValue").innerText = gasValue + "%"; // Atualiza o valor exibido
+                    // Atualiza a cor de acordo com o valor
+                    if (gasValue >= 0 && gasValue < 25) {
+                        document.getElementById("gasValue").style.color = "red"; // Menor que 25%
+                    } else if (gasValue >= 25 && gasValue < 50) {
+                        document.getElementById("gasValue").style.color = "#F39C12"; // Cor laranja mais escura
+                    } else {
+                        document.getElementById("gasValue").style.color = "green"; // Maior que 50%
+                    }
+                } else {
+                    document.getElementById("gasValue").innerText = "Erro ao carregar";
+                }
+            }).catch((error) => {
+                console.error("Erro ao ler gas_value:", error);
+                document.getElementById("gasValue").innerText = "Erro ao conectar ao banco de dados";
+            });
+        }
+
+        // Atualizar a página ao carregar pela primeira vez
+        window.onload = updateGasValue;
     </script>
     <style>
         body {
+            background-image: url('fundoo.png'); /* Imagem de fundo */
+            background-size: cover; /* Para cobrir toda a tela */
+            background-repeat: no-repeat; /* Não repetir a imagem */
+            background-attachment: fixed; /* Fixar a imagem no fundo */
+            background-position: center; /* Centraliza a imagem no fundo */
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
+            align-items: center; /* Centraliza todos os elementos horizontalmente */
+            justify-content: flex-start; /* Começar a alinhar no topo */
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            color: black; /* Mudar a cor para preto */
+        }
+
+        h1 {
+            color: black;
+            font-size: 4.5em; /* Tamanho do título ajustado */
+            margin-top: 80px; /* Espaço acima do título ajustado */
+            text-align: center; /* Centraliza o texto */
+            white-space: nowrap; /* Impedir quebra de linha */
+            overflow: hidden; /* Esconder overflow */
+            text-overflow: ellipsis; /* Adicionar reticências se o texto for longo */
+        }
+
+        .gas-label {
+            font-size: 3.375em; /* Tamanho reduzido para 6/8 do título */
+            margin-top: 250px; /* Reduzir pela metade na versão desktop */
+            margin-bottom: 10px; /* Ajuste para criar mais espaço abaixo do texto */
+            color: black;
+            text-align: center; /* Centraliza o texto */
+        }
+
+        #gasValue {
+            font-size: 4em; /* Aumentar o tamanho do texto da porcentagem */
+            margin-top: 125px; /* Reduzir pela metade na versão desktop */
+            color: yellow; /* Cor do texto */
+        }
+
+        #refreshBtn {
+            margin-top: 50px;
+            padding: 15px 25px;
+            font-size: 1.5em;
+            background-color: #757575; /* Cor neutra (cinza) */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Sombra suave */
+            display: flex;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            background-color: #f4f4f4;
         }
-        h1 {
-            color: #333;
-        }
-        #gasValue {
-            font-size: 2em;
-            color: #007BFF;
-        }
-		footer {
-			position: fixed;
-			bottom: 0;
-			width: 100%;
-			background-color: #333;
-			color: white;
-			text-align: center;
-			padding: 8px 0;
-			font-size: 16px; /* Ajusta o tamanho da fonte do rodapé */
-        }
-			.top-bar {
-    background-color: #007BFF; /* Azul mais forte */
-    color: #fff; /* Cor do texto em branco */
-    padding: 1px 0; /* Aumentando o espaçamento interno */
-    text-align: center; /* Centraliza o texto na barra */
-    width: 100%; /* Faz a barra ocupar toda a largura da página */
-    position: fixed; /* Fixa a barra no topo da página */
-    top: 0; /* Garante que a barra fique no topo */
-    z-index: 1000; /* Garante que a barra fique sobre outros elementos */
-    
-}
 
+        #refreshBtn:hover {
+            background-color: #5c5c5c; /* Cor ao passar o mouse */
+        }
 
-		
+        #refreshIcon {
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                background-attachment: scroll; /* Permitir rolagem da imagem em dispositivos móveis */
+                background-position: center; /* Centraliza a imagem no fundo em dispositivos móveis */
+                background-size: 350%; /* Aumentar o zoom da imagem para 350% */
+                justify-content: flex-start; /* Manter o alinhamento inicial */
+            }
+
+            h1 {
+                margin-top: 40px; /* Ajustar a margem superior para o título */
+                font-size: 2.5em; /* Ajustar o tamanho da fonte para dispositivos móveis */
+            }
+
+            .gas-label {
+                margin-top: 300px; /* Reposicionar para não sair da tela */
+                font-size: 2.5em; /* Ajustar o tamanho da fonte para dispositivos móveis */
+            }
+
+            #gasValue {
+                margin-top: 150px; /* Reposicionar para não sair da tela */
+                font-size: 2.5em; /* Ajustar o tamanho do texto para dispositivos móveis */
+            }
+
+            #refreshBtn {
+                font-size: 1.2em; /* Ajustar o tamanho do botão em dispositivos móveis */
+                padding: 10px 20px;
+            }
+        }
     </style>
 </head>
 <body>
-	<div class="top-bar">
-		<h2>Monitoramento de Gás</h2>
-	</div>
-   <!-- <h1>Monitoramento de Gás</h1> -->
-    <p>Quantidade de Gás: <span id="gasValue">Carregando...</span>%</p>
-	
+    <h1>Monitoramento de Gás</h1>
+    <div class="gas-label">Porcentagem do Gás</div>
+    <div id="gasValue">Carregando...</div>
+    <button id="refreshBtn" onclick="updateGasValue()">
+        <span id="refreshIcon">🔄</span> Atualizar
+    </button> <!-- Botão de atualizar com ícone -->
 </body>
-
-<footer>
-    <p>&copy; 2024 Monitoramento de Gás. Todos os direitos reservados.</p>
-</footer>
-
-
 </html>
