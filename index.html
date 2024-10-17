@@ -62,19 +62,21 @@
 			background-color: #333;
 			color: white;
 			text-align: center;
-			padding: 1px 0;
-			font-size: 10px; /* Ajusta o tamanho da fonte do rodapé */
+			padding: 8px 0;
+			font-size: 16px; /* Ajusta o tamanho da fonte do rodapé */
         }
 			.top-bar {
-		background-color: #add8e6; /* Azul claro */
-		color: #333; /* Cor do texto */
-		padding: 1px 0; /* Espaçamento dentro da barra */
-		text-align: center; /* Centraliza o texto na barra */
-		width: 100%; /* Faz a barra ocupar toda a largura da página */
-		position: fixed; /* Fixa a barra no topo da página */
-		top: 0; /* Garante que a barra fique no topo */
-		z-index: 1000; /* Garante que a barra fique sobre outros elementos */
-		}
+    background-color: #007BFF; /* Azul mais forte */
+    color: #fff; /* Cor do texto em branco */
+    padding: 1px 0; /* Aumentando o espaçamento interno */
+    text-align: center; /* Centraliza o texto na barra */
+    width: 60%; /* Faz a barra ocupar toda a largura da página */
+    position: fixed; /* Fixa a barra no topo da página */
+    top: 0; /* Garante que a barra fique no topo */
+    z-index: 1000; /* Garante que a barra fique sobre outros elementos */
+    border-radius: 10px; /* Bordas arredondadas */
+}
+
 
 		
     </style>
@@ -84,7 +86,7 @@
 		<h2>Monitoramento de Gás</h2>
 	</div>
    <!-- <h1>Monitoramento de Gás</h1> -->
-    <p>Porcentagem do Gás: <span id="gasValue">Carregando...</span>%</p>
+    <p>Quantidade de Gás: <span id="gasValue">Carregando...</span>%</p>
 	
 </body>
 
