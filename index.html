@@ -23,7 +23,8 @@
         const database = getDatabase(app);
         // Referência ao nó "gas_value" no banco de dados
         const gasValueRef = ref(database, "/gas_value");
-        // Ouve as mudanças no "gas_value" e atualiza a página em tempo real
+		const pesoValueRef = ref(database, "/botijao_get_peso");
+		        // Ouve as mudanças no "gas_value" e atualiza a página em tempo real
         onValue(gasValueRef, (snapshot) => {
             const gasValue = snapshot.val();
             console.log("Valor do gas_value:", gasValue);
@@ -36,6 +37,25 @@
         }, (error) => {
             console.error("Erro ao ler gas_value:", error);
             document.getElementById("gasValue").innerText = "Erro ao conectar ao banco de dados";
+			});
+			
+			// Ouve as mudanças no "botijao_get_peso" e atualiza a página em tempo real
+        onValue(pesoValueRef, (snapshot) => {
+            const pesoValue = snapshot.val();
+            console.log("Valor do botijao_get_peso:", pesoValue);
+            // Atualiza o valor exibido ou exibe uma mensagem de erro
+            if (pesoValue !== null) {
+                document.getElementById("botijao_get_peso").innerText = pesoValue;
+            } else {
+                document.getElementById("botijao_get_peso").innerText = "Erro ao carregar";
+            }
+        }, (error) => {
+            console.error("Erro ao ler botijao_get_peso:", error);
+            document.getElementById("botijao_get_peso").innerText = "Erro ao conectar ao banco de dados";
+			
+			
+							
+			
         });
     </script>
     <style>
@@ -76,19 +96,21 @@
     z-index: 1000; /* Garante que a barra fique sobre outros elementos */
 
 }
-
-
-
     </style>
 </head>
 <body>
 	<div class="top-bar">
 		<h2>Monitoramento de Gás</h2>
 	</div>
+   
+   <!-- <h1>Peso do Botijão</h1> -->
+    <p>Peso: <span id="botijao_get_peso">...</span>Kg</p>
+      
    <!-- <h1>Monitoramento de Gás</h1> -->
-    <p>Quantidade de Gás: <span id="gasValue">Carregando...</span>%</p>
+    <p>Quantidade de Gás: <span id="gasValue">...</span>%</p>
 
 </body>
+
 
 <footer>
         <p>&copy; 2024 Monitoramento de Gás. Todos os direitos reservados.</p>
