@@ -21,9 +21,11 @@
         // Inicializando o Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+        
         // Referência ao nó "gas_value" no banco de dados
         const gasValueRef = ref(database, "/gas_value");
 		const pesoValueRef = ref(database, "/botijao_get_peso");
+        const statusRef = ref(database, "/Status");
 		        // Ouve as mudanças no "gas_value" e atualiza a página em tempo real
         onValue(gasValueRef, (snapshot) => {
             const gasValue = snapshot.val();
@@ -52,11 +54,24 @@
         }, (error) => {
             console.error("Erro ao ler botijao_get_peso:", error);
             document.getElementById("botijao_get_peso").innerText = "Erro ao conectar ao banco de dados";
-			
-			
-							
-			
         });
+            
+            // ouve as mudanças no "status" e atualiza a página em tempo real
+			onValue(statusRef, (snapshot) => {
+            const status_value = snapshot.val();
+            console.log("status do sensor:", status_value);
+            // Atualiza o valor exibido ou exibe uma mensagem de erro     
+            if (status_value !== null){
+                document.getElementById("Status").innerText = status_value; 
+             }else {
+                document.getElementById("Status").innerText = "Erro ao carregar";
+             }
+
+            }, (error) => { 
+                 console.error("erro ao ler status:", error);
+                 document.getElementById("Status").innerText = "erro ao conectar ao banco de dados";
+			});
+
     </script>
     <style>
         body {
@@ -100,20 +115,23 @@
 </head>
 <body>
 	<div class="top-bar">
-		<h2>Monitoramento de Gás</h2>
+		<h2>Monitorando seu Gás</h2>
 	</div>
    
    <!-- <h1>Peso do Botijão</h1> -->
     <p>Peso: <span id="botijao_get_peso">...</span>Kg</p>
       
-   <!-- <h1>Monitoramento de Gás</h1> -->
+   
     <p>Quantidade de Gás: <span id="gasValue">...</span>%</p>
+
+    
+    <p>Status: <span id="Status">...</span></p>
 
 </body>
 
 
 <footer>
-        <p>&copy; 2024 Monitoramento de Gás. Todos os direitos reservados Wesley de Mattos De Oliveira.</p>
+        <p>&copy; 2024 Monitoramento de Gás. Todos os direitos reservados. Wesley.</p>
 </footer>
 
 
