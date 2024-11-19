@@ -9,15 +9,16 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js";
         // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyAbr7fMYIpnb83WakHYUonCQlNFoKDSLAc",
-            authDomain: "medidor-de-gas-95ee5.firebaseapp.com",
-            databaseURL: "https://medidor-de-gas-95ee5-default-rtdb.firebaseio.com",
-            projectId: "medidor-de-gas-95ee5",
-            storageBucket: "medidor-de-gas-95ee5.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+       const firebaseConfig = {
+  apiKey: "AIzaSyAbr7fMYIpnb83WakHYUonCQlNFoKDSLAc",
+  authDomain: "medidor-de-gas-95ee5.firebaseapp.com",
+  databaseURL: "https://medidor-de-gas-95ee5-default-rtdb.firebaseio.com",
+  projectId: "medidor-de-gas-95ee5",
+  storageBucket: "medidor-de-gas-95ee5.firebasestorage.app",
+  messagingSenderId: "533072883027",
+  appId: "1:533072883027:web:46ca3a0dc3f68409c4c5a6",
+  measurementId: "G-BDL32Q2EES"
+};
         // Inicializando o Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
